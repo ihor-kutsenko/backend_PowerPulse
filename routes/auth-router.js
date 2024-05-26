@@ -9,14 +9,14 @@ const userAddValidate = validateBody(userAddSchema);
 const authRouter = express.Router();
 
 authRouter.get("/", authController.getAll);
-authRouter.get("/:userId", authController.getById);
-authRouter.post("/", isEmptyBody, userAddValidate, authController.add);
-authRouter.put(
-  "/:userId",
-  isEmptyBody,
-  userAddValidate,
-  authController.updateById
-);
-authRouter.delete("/:userId", authController.deleteById);
+// authRouter.get("/:userId", authController.getById);
+// authRouter.post("/", isEmptyBody, userAddValidate, authController.add);
+// authRouter.put(
+//   "/:userId",
+//   isEmptyBody,
+//   userAddValidate,
+//   authController.updateById
+// );
+// authRouter.delete("/:userId", authController.deleteById);
 
 export default authRouter;

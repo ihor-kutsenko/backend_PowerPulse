@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
 import logger from "morgan";
+import dotenv from "dotenv/config";
 
 import authRouter from "./routes/auth-router.js";
 

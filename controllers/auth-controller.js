@@ -1,53 +1,54 @@
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
-import users from "../models/users.js";
+import User from "../models/user-model.js";
 
 const getAll = async (req, res) => {
-  const result = await users.listUsers();
+  const result = await User.find();
   res.json(result);
 };
 
-const getById = async (req, res) => {
-  const { userId } = req.params;
-  const result = await users.getUserById(userId);
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
+// const getById = async (req, res) => {
+//   const { userId } = req.params;
+//   const result = await users.getUserById(userId);
+//   if (!result) {
+//     throw HttpError(404, "Not found");
+//   }
 
-  res.json(result);
-};
+//   res.json(result);
+// };
 
-const add = async (req, res) => {
-  const result = await users.addUser(req.body);
-  res.status(201).json(result);
-};
+// const add = async (req, res) => {
+//   const result = await users.addUser(req.body);
+//   res.status(201).json(result);
+// };
 
-const updateById = async (req, res) => {
-  const { userId } = req.params;
-  const result = await users.updateUser(userId, req.body);
-  if (!result) {
-    throw HttpError(404, "Not Found");
-  }
-  res.json(result);
-};
+// const updateById = async (req, res) => {
+//   const { userId } = req.params;
+//   const result = await users.updateUser(userId, req.body);
+//   if (!result) {
+//     throw HttpError(404, "Not Found");
+//   }
+//   res.json(result);
+// };
 
-const deleteById = async (req, res) => {
-  const { userId } = req.params;
-  const result = await users.removeUser(userId);
-  if (!result) {
-    throw HttpError(404, "Not Found");
-  }
+// const deleteById = async (req, res) => {
+//   const { userId } = req.params;
+//   const result = await users.removeUser(userId);
+//   if (!result) {
+//     throw HttpError(404, "Not Found");
+//   }
 
-  res.status(200).json({ message: "user deleted" });
-};
+//   res.status(200).json({ message: "user deleted" });
+// };
 
 export default {
   getAll: ctrlWrapper(getAll),
-  getById: ctrlWrapper(getById),
-  add: ctrlWrapper(add),
-  updateById: ctrlWrapper(updateById),
-  deleteById: ctrlWrapper(deleteById),
+  // getById: ctrlWrapper(getById),
+  // add: ctrlWrapper(add),
+  // updateById: ctrlWrapper(updateById),
+  // deleteById: ctrlWrapper(deleteById),
 };
+// -----------------------------------------------------------------------------------
 // // registration
 // const registration = async (req, res) => {
 //   const { email, password } = req.body;
