@@ -2,21 +2,15 @@ import express from "express";
 import authController from "../controllers/auth-controller.js";
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import validateBody from "../decorators/validateBody.js";
-import { userAddSchema } from "../schemas/user-schemas.js";
-
-const userAddValidate = validateBody(userAddSchema);
+// import {
+//   userRegistrationJoiSchema,
+//   userLoginJoiSchema,
+//   userEmailJoiSchema,
+// } from "../models/user-model.js";
 
 const authRouter = express.Router();
 
-authRouter.get("/", authController.getAll);
-// authRouter.get("/:userId", authController.getById);
-// authRouter.post("/", isEmptyBody, userAddValidate, authController.add);
-// authRouter.put(
-//   "/:userId",
-//   isEmptyBody,
-//   userAddValidate,
-//   authController.updateById
-// );
-// authRouter.delete("/:userId", authController.deleteById);
+authRouter.post("/register", isEmptyBody, authController.registration);
+authRouter.post("/login", isEmptyBody, authController.login);
 
 export default authRouter;
