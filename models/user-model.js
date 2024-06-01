@@ -29,7 +29,7 @@ userSchema.post("save", handleSaveError);
 userSchema.pre("findOneAndUpdate", runValidatorsAtUpdate);
 userSchema.post("findOneAndUpdate", handleSaveError);
 
-export const userRegistrationJoiSchema = Joi.object({
+export const userSignupJoiSchema = Joi.object({
   name: Joi.string().required().messages({
     "any required": `'name required field`,
   }),
@@ -43,7 +43,7 @@ export const userRegistrationJoiSchema = Joi.object({
   }),
 });
 
-export const userLoginJoiSchema = Joi.object({
+export const userSignInJoiSchema = Joi.object({
   email: Joi.string().required().pattern(emailPattern).messages({
     "string.email": "Invalid email format",
     "any.required": "missing required email field",

@@ -3,11 +3,11 @@ import HttpError from "../helpers/HttpError.js";
 import User from "../models/user-model.js";
 
 // registration
-const registration = async (req, res) => {
+const signup = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) {
-    throw httpError(409, "Email in use");
+    throw HttpError(409, "Email in use");
   }
 
   const newUser = await User.create({
@@ -26,7 +26,7 @@ const registration = async (req, res) => {
 };
 
 // login
-const login = async (req, res) => {
+const signIn = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
@@ -54,7 +54,7 @@ const logOut = async (req, res) => {
 };
 
 export default {
-  registration: ctrlWrapper(registration),
-  login: ctrlWrapper(login),
+  signup: ctrlWrapper(signup),
+  signIn: ctrlWrapper(signIn),
   logOut: ctrlWrapper(logOut),
 };
