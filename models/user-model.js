@@ -43,7 +43,7 @@ export const userSignupJoiSchema = Joi.object({
   }),
 });
 
-export const userSignInJoiSchema = Joi.object({
+export const userSigninJoiSchema = Joi.object({
   email: Joi.string().required().pattern(emailPattern).messages({
     "string.email": "Invalid email format",
     "any.required": "missing required email field",

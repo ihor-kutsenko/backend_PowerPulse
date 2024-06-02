@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import User from "../models/user-model.js";
@@ -10,9 +12,11 @@ const signup = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
 
+  const hashPassword = await bcrypt.hash(password, 10);
+
   const newUser = await User.create({
     ...req.body,
-    password: password,
+    password: hashPassword,
     email: email,
   });
 
@@ -26,12 +30,18 @@ const signup = async (req, res) => {
 };
 
 // login
-const signIn = async (req, res) => {
+const signin = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    throw HttpError(401, "Email or password is wrong");
+    throw HttpError(401, "Email or password is invalid");
   }
+
+  const passwordCompare = await bcrypt.compare(password, user.password);
+  if (!passwordCompare) {
+    throw HttpError(401, "Email or password is invalid");
+  }
+
   await User.findByIdAndUpdate(user._id);
 
   res.json({
@@ -55,6 +65,6 @@ const logOut = async (req, res) => {
 
 export default {
   signup: ctrlWrapper(signup),
-  signIn: ctrlWrapper(signIn),
+  signin: ctrlWrapper(signin),
   logOut: ctrlWrapper(logOut),
 };

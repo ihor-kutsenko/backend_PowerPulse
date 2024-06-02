@@ -4,11 +4,12 @@ import isEmptyBody from "../middlewares/isEmptyBody.js";
 import validateBody from "../decorators/validateBody.js";
 import {
   userSignupJoiSchema,
-  // userSignInJoiSchema,
+  userSigninJoiSchema,
   // userEmailJoiSchema,
 } from "../models/user-model.js";
 
 const userSignupValidate = validateBody(userSignupJoiSchema);
+const userSigninValidate = validateBody(userSigninJoiSchema);
 
 const authRouter = express.Router();
 
@@ -18,6 +19,11 @@ authRouter.post(
   userSignupValidate,
   authController.signup
 );
-authRouter.post("/signin", isEmptyBody, authController.signIn);
+authRouter.post(
+  "/signin",
+  isEmptyBody,
+  userSigninValidate,
+  authController.signin
+);
 
 export default authRouter;
