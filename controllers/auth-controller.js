@@ -1,8 +1,11 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import User from "../models/user-model.js";
+
+const { JWT_SECRET } = process.env;
 
 // registration
 const signup = async (req, res) => {
@@ -42,6 +45,9 @@ const signin = async (req, res) => {
     throw HttpError(401, "Email or password is invalid");
   }
 
+  const payload = { id: user._id };
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+
   await User.findByIdAndUpdate(user._id);
 
   res.json({
@@ -50,6 +56,7 @@ const signin = async (req, res) => {
       name: user.name,
       registrationDate: user.createdAt,
     },
+    token: token,
   });
 };
 
