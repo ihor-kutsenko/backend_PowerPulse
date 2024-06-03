@@ -47,8 +47,7 @@ const signin = async (req, res) => {
 
   const payload = { id: user._id };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-
-  await User.findByIdAndUpdate(user._id);
+  await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
     user: {
@@ -60,18 +59,31 @@ const signin = async (req, res) => {
   });
 };
 
+// getCurrentUser
+const getCurrent = async (req, res) => {
+  const { name, email } = req.user;
+
+  res.json({
+    user: {
+      name: name,
+      email: email,
+    },
+  });
+};
+
 // logOut
-const logOut = async (req, res) => {
+const signout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id);
+  await User.findByIdAndUpdate(_id, { token: "" });
 
   res.status(204).json({
-    message: "LogOut success",
+    message: "Sign Out success",
   });
 };
 
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
-  logOut: ctrlWrapper(logOut),
+  getCurrent: ctrlWrapper(getCurrent),
+  signout: ctrlWrapper(signout),
 };

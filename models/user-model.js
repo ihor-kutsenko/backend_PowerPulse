@@ -21,6 +21,9 @@ const userSchema = new Schema(
       minlength: 6,
       required: [true, "Set password for user"],
     },
+    token: {
+      type: String,
+    },
   },
   { versionKey: false, timestamps: true }
 );
