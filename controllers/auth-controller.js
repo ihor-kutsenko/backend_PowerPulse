@@ -1,11 +1,15 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import fs from "fs/promises";
+import path from "path";
+import gravatar from "gravatar";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import User from "../models/user-model.js";
 
 const { JWT_SECRET } = process.env;
+const avatarsPath = path.resolve("public", "avatars");
 
 // registration
 const signup = async (req, res) => {
@@ -16,10 +20,12 @@ const signup = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarURL = gravatar.url(email);
 
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
+    avatarURL,
     email: email,
   });
 
@@ -54,6 +60,7 @@ const signin = async (req, res) => {
       email: user.email,
       name: user.name,
       registrationDate: user.createdAt,
+      avatarURL: user.avatarURL,
     },
     token: token,
   });
@@ -61,12 +68,14 @@ const signin = async (req, res) => {
 
 // getCurrentUser
 const getCurrent = async (req, res) => {
-  const { name, email } = req.user;
+  const { name, email, createdAt, avatarURL } = req.user;
 
   res.json({
     user: {
       name: name,
       email: email,
+      registrationDate: createdAt,
+      avatarURL: avatarURL,
     },
   });
 };
@@ -81,9 +90,24 @@ const signout = async (req, res) => {
   });
 };
 
+// updateAvatar
+const updateAvatar = async (req, res) => {
+  const { _id } = req.user;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("public", "avatars", filename);
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.json({
+    avatarURL,
+  });
+};
+
 export default {
   signup: ctrlWrapper(signup),
   signin: ctrlWrapper(signin),
   getCurrent: ctrlWrapper(getCurrent),
   signout: ctrlWrapper(signout),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };

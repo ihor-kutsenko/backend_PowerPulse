@@ -4,6 +4,7 @@ import authController from "../controllers/auth-controller.js";
 import isEmptyBody from "../middlewares/isEmptyBody.js";
 import validateBody from "../decorators/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 import {
   userSignupJoiSchema,
   userSigninJoiSchema,
@@ -32,5 +33,12 @@ authRouter.post(
 authRouter.get("/current", authenticate, authController.getCurrent);
 
 authRouter.post("/signout", authenticate, authController.signout);
+
+authRouter.patch(
+  "/avatar",
+  authenticate,
+  upload.single("avatar"),
+  authController.updateAvatar
+);
 
 export default authRouter;
