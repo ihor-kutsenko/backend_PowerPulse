@@ -93,10 +93,10 @@ const signout = async (req, res) => {
 // updateAvatar
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
-  const { path: tempUpload, filename } = req.file;
-  const resultUpload = path.join(avatarsPath, filename);
-  await fs.rename(tempUpload, resultUpload);
-  const avatarURL = `public/avatars/${filename}`;
+  const { path: oldPath, filename } = req.file;
+  const newPath = path.join(avatarsPath, filename);
+  await fs.rename(oldPath, newPath);
+  const avatarURL = path.join("public", "avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarURL });
 
   res.json({
