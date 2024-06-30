@@ -25,7 +25,7 @@ const signup = async (req, res) => {
   const newUser = await User.create({
     ...req.body,
     password: hashPassword,
-    avatarURL,
+    avatarURL: avatarURL,
     email: email,
   });
 
@@ -93,10 +93,10 @@ const signout = async (req, res) => {
 // updateAvatar
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
-  const { path: oldPath, filename } = req.file;
-  const newPath = path.join(avatarsPath, filename);
-  await fs.rename(oldPath, newPath);
-  const avatarURL = path.join("public", "avatars", filename);
+  const { path: tempUpload, filename } = req.file;
+  const resultUpload = path.join(avatarsPath, filename);
+  await fs.rename(tempUpload, resultUpload);
+  const avatarURL = `/avatars/${filename}`;
   await User.findByIdAndUpdate(_id, { avatarURL });
 
   res.json({
