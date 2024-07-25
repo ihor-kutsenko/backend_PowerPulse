@@ -1,15 +1,14 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import fs from "fs/promises";
-import path from "path";
 import gravatar from "gravatar";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
+import cloudinary from "../helpers/cloudinary.js";
 import User from "../models/user-model.js";
 
 const { JWT_SECRET } = process.env;
-const avatarsPath = path.resolve("public", "avatars");
 
 // registration
 const signup = async (req, res) => {
@@ -93,14 +92,14 @@ const signout = async (req, res) => {
 // updateAvatar
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
-  const { path: oldPath, filename } = req.file;
-  const newPath = path.join(avatarsPath, filename);
-  await fs.rename(oldPath, newPath);
-  const avatarURL = path.join("public", "avatars", filename);
-  await User.findByIdAndUpdate(_id, { avatarURL });
+  const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "avatars",
+  });
+  await fs.unlink(req.file.path);
+  await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
 
   res.json({
-    avatarURL,
+    avatarURL: result.secure_url,
   });
 };
 
