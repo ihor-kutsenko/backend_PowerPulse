@@ -92,15 +92,29 @@ const signout = async (req, res) => {
 // updateAvatar
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
-  const result = await cloudinary.uploader.upload(req.file.path, {
-    folder: "avatars",
-  });
-  await fs.unlink(req.file.path);
-  await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
+  const { path: avatarTempPath } = req.file;
 
-  res.json({
-    avatarURL: result.secure_url,
-  });
+  // const result = await cloudinary.uploader.upload(req.file.path, {
+  //   folder: "avatars",
+  // });
+  // await fs.unlink(req.file.path);
+  // await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
+
+  // res.json({
+  //   avatarURL: result.secure_url,
+  // });
+  try {
+    const result = await cloudinary.uploader.upload(avatarTempPath);
+    await fs.unlink(avatarTempPath);
+    await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
+
+    res.json({
+      avatarURL: result.secure_url,
+    });
+  } catch (error) {
+    console.error("error loading avatar:", error);
+    res.status(500).json({ error: "error loading avatar:" });
+  }
 };
 
 export default {
