@@ -67,7 +67,7 @@ const signin = async (req, res) => {
 
 // getCurrentUser
 const getCurrent = async (req, res) => {
-  const { name, email, createdAt, avatarURL } = req.user;
+  const { name, email, token, createdAt, avatarURL } = req.user;
 
   res.json({
     user: {
@@ -76,6 +76,7 @@ const getCurrent = async (req, res) => {
       registrationDate: createdAt,
       avatarURL: avatarURL,
     },
+    token: token,
   });
 };
 
@@ -93,16 +94,6 @@ const signout = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
   const { path: avatarTempPath } = req.file;
-
-  // const result = await cloudinary.uploader.upload(req.file.path, {
-  //   folder: "avatars",
-  // });
-  // await fs.unlink(req.file.path);
-  // await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
-
-  // res.json({
-  //   avatarURL: result.secure_url,
-  // });
   try {
     const result = await cloudinary.uploader.upload(avatarTempPath);
     await fs.unlink(avatarTempPath);
