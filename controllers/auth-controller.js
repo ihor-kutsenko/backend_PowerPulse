@@ -7,6 +7,7 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 import cloudinary from "../helpers/cloudinary.js";
 import User from "../models/user-model.js";
+import { ProfileSettings } from "../models/profileSettings-model.js";
 
 const { JWT_SECRET } = process.env;
 
@@ -44,6 +45,10 @@ const signin = async (req, res) => {
   if (!user) {
     throw HttpError(401, "Email or password is invalid");
   }
+  const settings = await ProfileSettings.findOne(
+    { owner: user.id },
+    "-_id -createdAt -updatedAt -owner"
+  );
 
   const passwordCompare = await bcrypt.compare(password, user.password);
   if (!passwordCompare) {
@@ -60,6 +65,7 @@ const signin = async (req, res) => {
       name: user.name,
       registrationDate: user.createdAt,
       avatarURL: user.avatarURL,
+      profileSettings: settings,
     },
     token: token,
   });
@@ -67,7 +73,11 @@ const signin = async (req, res) => {
 
 // getCurrentUser
 const getCurrent = async (req, res) => {
-  const { name, email, token, createdAt, avatarURL } = req.user;
+  const { name, email, token, id, createdAt, avatarURL } = req.user;
+  const settings = await ProfileSettings.findOne(
+    { owner: id },
+    "-_id -createdAt -updatedAt -owner"
+  );
 
   res.json({
     user: {
@@ -75,6 +85,7 @@ const getCurrent = async (req, res) => {
       email: email,
       registrationDate: createdAt,
       avatarURL: avatarURL,
+      profileSettings: settings,
     },
     token: token,
   });
