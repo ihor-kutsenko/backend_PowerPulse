@@ -6,6 +6,7 @@ import dotenv from "dotenv/config";
 import authRouter from "./routes/auth-router.js";
 import profileSettingsRouter from "./routes/profileSettings-router.js";
 import exercisesRouter from "./routes/exercises-router.js";
+import productsRouter from "./routes/products-router.js";
 
 const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
@@ -18,6 +19,7 @@ app.use(express.static("public"));
 app.use("/api/users", authRouter);
 app.use("/api/profile-settings", profileSettingsRouter);
 app.use("/api/exercises", exercisesRouter);
+app.use("/api/products", productsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
